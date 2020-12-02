@@ -55,13 +55,13 @@ SrnpPacket sendPacketRight, receivePacketRight;
 SrnpPacket sendPacketHost, receivePacketHost;     // recall that we insert data into/out of these even if HOST<>FNIC is custom.
 
 // Global multi packet ring buffers
-RingBuf<struct BufferedSrnpPacket, RINGBUFFERSIZE> ringBufferLeft;
-RingBuf<struct BufferedSrnpPacket, RINGBUFFERSIZE> ringBufferRight;
-RingBuf<struct BufferedSrnpPacket, RINGBUFFERSIZE> ringBufferHost;
+RingBuf<struct BufferedSrnpPacket, RINGBUFFERSIZE> bufferOutLeft;
+RingBuf<struct BufferedSrnpPacket, RINGBUFFERSIZE> bufferOutRight;
+RingBuf<struct BufferedSrnpPacket, RINGBUFFERSIZE> bufferOutHost;
 
 // State machine vars
 enum statemachine state=INITMYSELF; // Track the states of my main state machine. Start in INITMYSELF state.
-uint8_t awaketask = 0; // control sequence of tasks within stateAwake()
+
 
 //RTCZero rtc; // Create an RTC object
 
@@ -105,47 +105,61 @@ void loop() {
   //Serial.println("loop() top");
   switch (state)
   {
-    case AWAKE: // 
-      //Serial.println("AWAKE Starting");
-      stateAwake();
-      //Serial.println("AWAKE Finishing");
-      // a decision on which state to go into next was made inside stateAwake(). We do not set it here.
-      break;
-
-    case HOUSEKEEPING:
-      //Serial.println("HOUSEKEEPING Starting");
-      stateHousekeeping();
-      //Serial.println("HOUSEKEEPING Finishing");
-      state = AWAKE;  // always return to AWAKE state after this state.
-      break;  
-
     case INITMYSELF:
       //Serial.println("INITMYSELF Starting");
       stateInitmyself();
       //Serial.println("INITMYSELF Finishing");
-      // a decision on which state to go into next was made inside stateAwake(). We do not set it here.
+      // CHECKONNETWORK is always next state
+      break; 
+
+    case CHECKONNETWORK: // 
+      //Serial.println("CHECKONNETWORK Starting");
+      stateCheckOnNetwork();
+      //Serial.println("CHECKONNETWORK Finishing");
+      // CHECKONHOST is always next state
       break; 
 
     case CHECKONHOST: // 
       //Serial.println("CHECKONHOST Starting");
       stateCheckOnHost();
       //Serial.println("CHECKONHOST Finishing");
-      // a decision on which state to go into next was made inside stateCheckOnHost(). We do not set it here.
+      // ACTIONPACKETS is always next state
       break;      
-
-    case CHECKFORPACKETS: // 
-      //Serial.println("CHECKFORPACKETS Starting");
-      stateCheckForPackets();
-      //Serial.println("CHECKFORPACKETS Finishing");
-      // a decision on which state to go into next was made inside stateCheckForPackets(). We do not set it here.
-      break; 
 
     case ACTIONPACKETS:
       //Serial.println("ACTIONPACKETS Starting");
       stateActionPackets();
-      //Serial.println("ACTIONPACKETS Finishing");
-      state = AWAKE;  // always return to AWAKE state after this state. 
+      // HOUSEKEEPING is always next state
       break;
+
+    case HOUSEKEEPING:
+      //Serial.println("HOUSEKEEPING Starting");
+      stateHousekeeping();
+      //Serial.println("HOUSEKEEPING Finishing");
+      // SHOULDISLEEP is always next state
+      break;  
+
+    case SHOULDISLEEP:
+      //Serial.println("SHOULDISLEEP Starting");
+      stateShouldISleep();
+      //Serial.println("SHOULDISLEEP Finishing");
+      // Next state is determined dynamically within this state.
+      break; 
+
+    case SLEEP:
+      //Serial.println("SLEEP Starting");
+      stateSleep();
+      //Serial.println("SLEEP Finishing");
+      // WAKEUP is always next state
+      break; 
+
+    case WAKEUP:
+      //Serial.println("WAKEUP Starting");
+      stateWakeup();
+      //Serial.println("WAKEUP Finishing");
+      // CHECKONNETWORK is always next state
+      break; 
+
 
     default:  // this should not be executed, if it is, something in the statemachine went amis
       // write a suitable error message to the Flight Data Recorder

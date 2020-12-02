@@ -104,7 +104,6 @@ void stateCheckOnHost(){
 #endif  // NODE4
 
 
-    if (actionPacket) state = ACTIONPACKETS;
-    else state = AWAKE;
+    state = ACTIONPACKETS;  // always goto that state after this one. 
 
 }   // END - stateCheckOnHost()

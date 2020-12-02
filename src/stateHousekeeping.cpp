@@ -9,4 +9,6 @@
 
 void stateHousekeeping(){
     
+
+    state = SHOULDISLEEP;  // always goto that state after this one. 
 }

@@ -1,5 +1,5 @@
 /*
- * stateCheckForPackets()
+ * stateCheckOnNetwork()
  * 
  * Check if there are any packets that have arrived on either LEFt or RIGHT interface.
  * 
@@ -8,7 +8,7 @@
 
 #include "global_vars.h"
 
-void stateCheckForPackets(){
+void stateCheckOnNetwork(){
     
     bool actionPacket = false;    // assuming no action required unless proven otherwise.
     
@@ -47,7 +47,6 @@ void stateCheckForPackets(){
     }
 
 
-    if (actionPacket) state = ACTIONPACKETS;   // if we did receive something then ensure next state is to action it.
-    else state = AWAKE;
+    state = CHECKONHOST;  // always goto that state after this one. 
 
-}   // END - stateCheckForPackets()
+}   // END - stateCheckOnNetwork()
