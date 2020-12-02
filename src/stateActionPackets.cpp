@@ -168,7 +168,7 @@ void stateActionPackets(){
     }
   } // END - recRight
 
-  state = HOUSEKEEPING;  // always goto that state after this one.  
-
+  
+  // Note: no need to set next state here, it is done out in loop()
   //Serial.println("stateActionPackets() END");
 }   // END - stateActionPackets()

@@ -14,7 +14,7 @@
 
 void stateInitmyself(){
     Serial.println("stateInitmyself() START");
-
+    awaketask = 0; // ensure stateAwake() starts back at its first task.
 
     //zero out the seen packets data store
     for(int row=0;row<SEENPACKETSMAXROW;row++)
@@ -62,6 +62,6 @@ void stateInitmyself(){
     //        other than at Power On RESET.
 
     
-    state = CHECKONNETWORK;  // as this is called once in setup() I actually need to set the next state here otherwise
+    state = AWAKE;  // as this is called once in setup() I actually need to set the next state here otherwise
                   // I was finding it was running a 2nd time the first time loop() executed.
 }   // END - statInitMyself()
