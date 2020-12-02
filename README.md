@@ -1,4 +1,4 @@
-Serial Ring Network Node
+Serial Ring Network Node doco
 By Paul Jeffress
 
 Custom Serial Ports
