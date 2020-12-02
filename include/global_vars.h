@@ -44,7 +44,7 @@
 #define RINGBUFFERSIZE  10
 
 /* define any enums */
-enum statemachine { AWAKE, HOUSEKEEPING, INITMYSELF, PRESLEEP, SLEEP, POSTSLEEP, CHECKFORPACKETS, ACTIONPACKETS, CHECKONHOST, REPORT };
+enum statemachine { INITMYSELF, CHECKONNETWORK, CHECKONHOST, ACTIONPACKETS, HOUSEKEEPING, SHOULDISLEEP, SLEEP, WAKEUP };
 enum I2Cstatemachine { HOST_IDLE, HOST_TRANSMIT, HOST_RECEIVE, HOST_RECEIVE_ACTION};
 
 
@@ -69,7 +69,6 @@ extern SrnpPacket sendPacketHost, receivePacketHost;
     extern int I2CnumBytesReceived;
 #endif 
 extern enum statemachine state;
-extern uint8_t awaketask;
 //extern RTCZero rtc;
 extern bool recHost;
 extern bool recLeft;
@@ -85,13 +84,13 @@ void setupRTC();
 void setupTimers();
 void setupPins();
 void stateInitmyself();
-void stateAwake();
 void stateHousekeeping();
 void stateCheckOnHost();
-void stateCheckForPackets();
+void stateCheckOnNetwork();
 void stateActionPackets();
-bool hasHousekeepingTimerExpired();
-bool canWeSleep();
+void stateShouldISleep();
+void stateSleep();
+void stateWakeup();
 bool seenBefore(uint8_t s,uint8_t d,uint8_t m);
 void addSeenBefore(uint8_t s,uint8_t d,uint8_t m);
 SrnpPacket emptyPacket();
